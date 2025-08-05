@@ -1,0 +1,38 @@
+name: Destroy Hello World Web App - Production
+
+on:
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  destroy:
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Configure AWS credentials using OIDC
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+
+      
+      - name: Empty S3 bucket before destroy
+        run: aws s3 rm s3://${{ secrets.S3_BUCKET_NAME }} --recursive
+
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+
+      - name: Terraform Init
+        run: terraform init -backend-config="key=okta/terraform.tfstate"
+
+      - name: Terraform Destroy
+        run: terraform destroy -auto-approve
