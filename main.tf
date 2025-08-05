@@ -11,7 +11,11 @@ terraform {
     }
   }
 }
-
+provider "auth0" {
+  domain        = "dev-gfew5m8jtuzrrhhw.us.auth0.com"
+  client_id                  = "rZyBhpq7SsMgyhxXTPbjfmRunEZHDFNq"
+  client_secret              = "iFLPIid-tlvMK9igrZfZGnWiV6cHJI1TNZRrLN_o-vHDmJ7lKbtXuxoNTxABAsq5"
+}
 
 # S3 Bucket for Hosting
 resource "aws_s3_bucket" "website_bucket" {
